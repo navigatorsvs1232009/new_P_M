@@ -1,12 +1,9 @@
 <?php
-
 use Bitrix\Main\Diag\Debug;
 use \EventHandlers\CRM\CrmDeal;
 use \Bitrix\Crm\DealTable;
 use Bitrix\Mail\Helper\Message;
-#use Bitrix\Mail\Integration\Calendar\ICal\ICalMailManager;
 use \Bitrix\Main\Entity\Event;
-#use \Bitrix\Main\EventResult;
 
 CModule::IncludeModule('mail');
 CModule::IncludeModule('crm');
@@ -20,8 +17,6 @@ function onMailMessageNew($event)
     $USER_ID = $USER->GetID();
     $message = $event->getParameter('message');
     $file_id = Message::ensureAttachments($message);
-
-
 
     $dbr_attach = CMailAttachment::GetList(Array("NAME" => "ASC", "ID" => "ASC"), Array("MESSAGE_ID" => $message['ID']));
     while ($dbr_attach_arr = $dbr_attach->GetNext()) {
@@ -46,7 +41,6 @@ function onMailMessageNew($event)
         ), array(), true);
         $FILE_ID = $file->getId();
 
-
             $arFile["old_file"] = "";
             $arFile["del"] = "Y";
             $arFile["MODULE_ID"] = "tasks";
@@ -54,8 +48,6 @@ function onMailMessageNew($event)
         }
     }
 
-
-    //
     $oTaskItem = array(
         "TITLE" => $message["SUBJECT"],
         "DESCRIPTION" => $message["BODY"],
@@ -64,19 +56,8 @@ function onMailMessageNew($event)
 
     );
     $taskItem = \CTaskItem::add($oTaskItem, 1);
-    //
 
     Debug::dumpToFile($FILE_ID);
     Debug::dumpToFile($fid);
     Debug::dumpToFile($arFile);
-
-
 }
-
-
-
-//$eventManager->addEventHandler('crm', 'onEntityDetailsTabsInitialized', [
-//        'Aclips\\CustomCrm\\Handler',
-//        'setCustomTabs'
-//    ]
-//);
